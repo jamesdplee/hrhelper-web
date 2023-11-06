@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+    ID Viewer - {{ details.title() }} Details
+{% endblock %}
+
+{% block content %}
+<body>
+    <a href="javascript:window.history.go(-1)">Back</a>
+    <h1>View - {{ details.title() }} Details</h1>
+    <div class="scrollable-table">
+        <table>
+            <thead>
+                <tr>
+                    {% for key in result['value'][0] %}
+                    <th {% if key == 'id' %}class="hidden"{% endif %}>{{ key }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in result['value'] %}
+                <tr>
+                    {% for key, value in item.items() %}
+                    <td {% if key == 'id' %}class="hidden"{% endif %}>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+{% endblock %}

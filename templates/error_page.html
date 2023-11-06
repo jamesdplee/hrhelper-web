@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Error
+{% endblock %}
+
+{% block content %}
+    <h1>An error occurred</h1>
+    <p>Sorry, something went wrong. Please try again later.</p>
+    <p>Error details: {{ error_message if error_message else 'No details available' }}</p>
+    <p>Error description: {{ error_description if error_description else 'No description available' }}</p>
+{% endblock %}

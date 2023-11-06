@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Login
+{% endblock %}
+
+{% block content %}
+  <p>No user currently signed in.</p>
+  <ul><li><a href='{{ auth_uri }}'>Sign In</a></li></ul>
+{% endblock %}

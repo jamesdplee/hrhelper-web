@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Index
+{% endblock %}
+
+{% block content %}
+<h1>Welcome to HRHelper</h1>
+  {% if 'user' in session %}
+    {% if config.get("ENDPOINT") %}
+    <ul>
+      <li><a href='/view/all'>View all identity information</a></li>
+      <li><a href='/edit/personal'>Edit staff personal information</a></li>
+      <li><a href='/edit/work'>Edit staff work information</a></li>
+      <li><a href="/logout">Sign Out</a></li>
+    </ul>
+    {% endif %}
+  {% else %}
+    <p>You must sign in to use HRHelper.</p>
+  {% endif %}
+{% endblock %}

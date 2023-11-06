@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}
+    ID Editor
+{% endblock %}
+
+{% block content %}
+<body>
+    <a href="javascript:window.history.go(-1)">Back</a>
+    <h1>Edit - {{ details.title() }} Details</h1>
+    <div class="scrollable-table">
+        <table>
+            <thead>
+                <tr>
+                    {% for key in result['value'][0] %}
+                    <th {% if key == 'id' %}class="hidden"{% endif %}>{{ key }}</th>
+                    {% endfor %}
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in result['value'] %}
+                <tr>
+                    <form method="POST">
+                        <input type="hidden" name="id" value="{{ item['id'] }}">
+                        {% for key, value in item.items() %}
+                        <td {% if key == 'id' %}class="hidden"{% endif %}>
+                            <input type="text" name="{{ key }}" value="{{ value }}" disabled>
+                        </td>
+                        {% endfor %}
+                        <td>
+                            <button type="button" onclick="editRow(this)">Edit</button>
+                            <input type="submit" value="Save Changes">
+                        </td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function editRow(button) {
+            // Disable all input fields
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                input.disabled = true;
+            });
+
+            // Enable input fields in the row of the clicked button
+            let row = button.parentElement.parentElement;
+            row.querySelectorAll('input[type="text"]').forEach(input => {
+                input.disabled = false;
+            });
+        }
+    </script>
+</body>
+{% endblock %}

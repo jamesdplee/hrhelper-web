@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} - HRHelper</title>
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            background-color: #222; /* .NET Core's default navbar color */
+            color: #9d9d9d; /* .NET Core's default navbar text color */
+            padding: 15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* .NET Core's default font */
+        }
+        .navbar a {
+            color: #9d9d9d; /* .NET Core's default navbar link color */
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        .navbar a.active,
+        .navbar a:hover,
+        .navbar a:focus {
+            color: #fff; /* .NET Core's default navbar link hover/focus color */
+            background-color: transparent;
+        }
+        .navbar .brand {
+            font-weight: bold;
+            border-right: 1px solid white;
+            padding-right: 15px;
+            margin-right: 15px;
+        }
+ 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* .NET Core's default font */
+            color: #333; /* .NET Core's default body text color */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd; /* .NET Core's default table border color */
+            padding: 8px;
+        }
+
+        th {
+            background-color: #222; 
+            color: white; 
+        }
+        html, body {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }        
+        .content {
+            padding: 10px 20px; 
+            flex: 1 0 auto;
+        }        
+        footer {
+            margin-top: auto;
+            padding: 15px 20px;
+            background-color: #ccc; 
+            color: #333;
+            text-align: right;
+            flex-shrink: 0;
+        }
+        .scrollable-table {
+            overflow-x: auto;
+        }
+        .hidden {
+            display: none;
+        }
+        .alert {
+            position: fixed;
+            top: 60px;
+            right: 0;
+            padding: 10px;
+            margin: 10px;
+            z-index: 9999;
+            border-radius: 3px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            animation: slide-down 0.5s ease-out, fade-out 0.5s 2.5s;
+        }
+        .alert-success {
+            background-color: #4caf50;
+            color: white;
+        }
+        .alert-error {
+            background-color: #f44336;
+            color: white;
+        }
+        .close-alert {
+            float: right;
+            background: none;
+            border: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        @keyframes slide-down {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes fade-out {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+                                  
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div>
+            <a class="brand" href="/">HRHelper</a>
+            <a href="{{ url_for('view', details='all') }}" class="{{ 'active' if request.path == url_for('view', details='all') }}">View All</a>
+            <a href="{{ url_for('edit', details='personal') }}" class="{{ 'active' if request.path == url_for('edit', details='personal') }}">Edit Personal</a>
+            <a href="{{ url_for('edit', details='work') }}" class="{{ 'active' if request.path == url_for('edit', details='work') }}">Edit Work</a>
+        </div>
+        <div>
+            {% if 'user' in session %}
+            <a href="/logout">Sign Out (User)</a>
+            {% elif app_mode == 'app' %}
+            <a href="/logout">Sign Out (App)</a>
+            {% else %}
+            <a href="/login">Sign In</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                        <button class="close-alert">X</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <hr>
+    <footer style="display: flex; justify-content: space-between;">
+        <div>
+            <form action="{{ url_for('set_mode') }}" method="post" id="setModeForm">
+                <label for="mode">Mode:</label>
+                <input type="radio" id="userMode" name="mode" value="user" {{ 'checked' if app_mode == 'user' else '' }}>
+                <label for="userMode">As User</label>
+                <input type="radio" id="appMode" name="mode" value="app" {{ 'checked' if app_mode == 'app' else '' }}>
+                <label for="appMode">As App</label>
+            </form>
+        </div>
+        <div>
+            See this <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-python-webapp-msal" target="_blank">Microsoft quickstart article</a> for reference.
+        </div>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        $("#setModeForm input[type='radio']").change(function(){
+            $("#setModeForm").submit();
+        });
+    });
+    </script>    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var closeButton = alert.querySelector('.close-alert');
+                closeButton.addEventListener('click', function() {
+                    alert.remove();
+                });
+                setTimeout(function() {
+                    alert.remove();
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>
